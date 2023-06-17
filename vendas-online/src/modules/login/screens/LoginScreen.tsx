@@ -1,36 +1,44 @@
 import { useState } from 'react';
-import Button from "../../../share/buttons/button/Button";
-import Input from "../../../share/input/input/input";
-import { BackgroundImage, ContainerLogin, ContainerLoginScreen, LimitedContainer, LogoImg, TitleLogin } from "../styles/loginScreen.styles";
+
+import { BackgroundImage, ContainerLogin, ContainerLoginScreen, LimitedContainer, TitleLogin } from "../styles/loginScreen.styles";
+import SVGHome from '../../../share/components/icons/SVGHome';
+import Input from '../../../share/components/input/input';
+import Button from '../../../share/components/buttons/button/Button';
+import { useRequests } from '../../../share/hooks/useRequests';
+
 
 const LoginScreen = () => {
-    const [userName, setUserName] = useState('');
-    const [userPassword, setUserPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const { postRequest, loading } = useRequests();
 
 
-    const handleUserName = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setUserName(event.target.value);
+    const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(event.target.value);
     }
 
-    const handleUserPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setUserPassword(event.target.value);
+    const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPassword(event.target.value);
     }
 
 
     const handleLogin = () => {
-        alert(`usuario: ${userName} senha: ${userPassword}`)
-    }
+        postRequest('http://localhost:8080/auth', {
+            email: email,
+            password: password,
+        })
+    };
 
     return (
         <ContainerLoginScreen>
             <BackgroundImage src="./background.png" />
             <ContainerLogin>
                 <LimitedContainer>
-                    <LogoImg />
+                    <SVGHome />
                     <TitleLogin level={2} type="secondary">LOGIN</TitleLogin>
-                    <Input title="USUÁRIO" margin="32px 0px 0px" onChange={handleUserName} value={userName} />
-                    <Input title="SENHA" margin="32px 0px 0px" type='password' onChange={handleUserPassword} value={userPassword} />
-                    <Button type="primary" margin="64px 0px 16px 0px" onClick={handleLogin}>ENTRAR</Button>
+                    <Input title="USUÁRIO" margin="32px 0px 0px" onChange={handleEmail} value={email} />
+                    <Input title="SENHA" margin="32px 0px 0px" type='password' onChange={handlePassword} value={password} />
+                    <Button loading={loading} type="primary" margin="64px 0px 16px 0px" onClick={handleLogin}>ENTRAR</Button>
                 </LimitedContainer>
             </ContainerLogin>
         </ContainerLoginScreen>
