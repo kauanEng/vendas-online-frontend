@@ -6,29 +6,25 @@ import Input from '../../../share/components/input/input';
 import Button from '../../../share/components/buttons/button/Button';
 import { useRequests } from '../../../share/hooks/useRequests';
 
-
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { postRequest, loading } = useRequests();
-
+    const { authRequest, loading } = useRequests();
 
     const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value);
     }
-
     const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(event.target.value);
     }
 
-
     const handleLogin = () => {
-        postRequest('http://localhost:8080/auth', {
+        authRequest({
             email: email,
             password: password,
-        })
+        });
     };
-
+    
     return (
         <ContainerLoginScreen>
             <BackgroundImage src="./background.png" />
