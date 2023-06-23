@@ -1,21 +1,32 @@
 import {
   createBrowserRouter,
+  RouteObject,
   RouterProvider,
 } from "react-router-dom";
 import { loginRoutes } from './modules/login/routes';
 import { useNotification } from "./share/hooks/useNotification";
-import { firstScreenRoutes } from "./modules/firstScreen/routes";
 import { productScreen } from "./modules/product/routes";
+import { useGlobalContext } from "./share/hooks/useGlobalContext";
+import { verifyLoggedIn } from "./share/functions/connection/auth";
+import { firstScreenRoutes } from "./modules/firstScreen/routes";
 
-
-const router = createBrowserRouter([
-  ...firstScreenRoutes, 
-  ...loginRoutes, 
-  ...productScreen
-]);
 
 function App() {
   const { contextHolder } = useNotification();
+  const { user, setUser } = useGlobalContext();
+
+  const routes: RouteObject[] = [...firstScreenRoutes, ...loginRoutes]
+  const routesLoggedIn: RouteObject[] = [...productScreen].map((route) => ({
+    ...route,
+    loader: () => verifyLoggedIn(setUser, user),
+  }));
+
+  const router = createBrowserRouter([
+    ...routes,
+    ...routesLoggedIn
+  ]);
+
+
   return (
     <>
       {contextHolder}

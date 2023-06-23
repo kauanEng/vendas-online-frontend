@@ -1,6 +1,12 @@
+import { useGlobalContext } from "../../../share/hooks/useGlobalContext";
+
 const Product = () => {
+    const { user } = useGlobalContext();
+
     return (
-        <div>Página de produtos</div>
+        <div>Página de produtos
+            {`PRODUTOS ${user?.name}`}
+        </div>
     )
 }
 
