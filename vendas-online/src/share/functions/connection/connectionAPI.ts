@@ -1,6 +1,4 @@
 import axios, { AxiosRequestConfig } from 'axios';
-
-
 import { MethodsEnum } from '../../enums/methods.enum';
 import { getAuthorizationToken } from './auth';
 import { ERROR_ACCESS_DANIED, ERROR_CONNECTION } from './errorStatus/errorStatus';

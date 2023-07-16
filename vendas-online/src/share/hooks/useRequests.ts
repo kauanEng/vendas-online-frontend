@@ -1,7 +1,6 @@
-import axios from "axios";
 import { useState } from "react"
 import { useGlobalContext } from "./useGlobalContext";
-import { connectionAPIPost } from "../functions/connection/connectionAPI";
+import ConnectionAPI, { MethodType, connectionAPIPost } from "../functions/connection/connectionAPI";
 import { URL_AUTH } from "../functions/connection/urls";
 import { ERROR_INVALID_PASSWORD } from "../functions/connection/errorStatus/errorStatus";
 import { useNavigate } from "react-router-dom";
@@ -14,34 +13,22 @@ export const useRequests = () => {
     const navigate = useNavigate();
     const { setNotification, setUser } = useGlobalContext();
 
-    const getRequest = async (url: string) => {
+    const request = async <T>(url: string, method: MethodType, body?: unknown, saveGlobal?: (object: T) => void): Promise<T | undefined> => {
         setLoading(true);
-        return await axios({
-            method: "get",
-            url: url,
-        })
-            .then((result) => {
-                console.log(`${result.data.accessToken}`);
-                return result.data;
-            })
-            .catch(() => {
-                setNotification('Problema de requisição', 'error')
-            })
-    }
 
-    const postRequest = async <T>(url: string, body: any): Promise<T | undefined> => {
-        setLoading(true);
-        const returnData = await connectionAPIPost<T>(url, body)
+        const returnObject: T | undefined = await ConnectionAPI.connect<T>(url, method, body)
             .then((result) => {
-                setNotification('Login efetuado com sucesso!', 'success');
+                if (saveGlobal) {
+                    saveGlobal(result)
+                }
                 return result;
             })
             .catch((error: Error) => {
                 setNotification(error.message, 'error')
                 return undefined;
-            });
-        setLoading(false)
-        return returnData;
+            })
+        setLoading(false);
+        return returnObject;
     }
 
 
@@ -65,7 +52,6 @@ export const useRequests = () => {
     return {
         loading,
         authRequest,
-        getRequest,
-        postRequest
+        request,
     }
 }
